@@ -17,14 +17,25 @@ var http = require('http');
 var address = "http://127.0.0.1:4444";
 var server = index_1.default(address);
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 500;
-describe("test1", () => {
-    it("etest1", (done) => __awaiter(this, void 0, Promise, function* () {
+describe("Server", () => {
+    it("simple", (done) => __awaiter(this, void 0, Promise, function* () {
         var answer = { c: "test" };
         server.when("GET", "/test").and.returnValue(answer);
         http.request({
             host: "127.0.0.1",
             port: 4444,
             path: "/test"
+        }).end();
+        yield server.waitForRequest();
+        expect(server.when("GET", "/test").calls.count()).toBe(1);
+        done();
+    }));
+    it("when url contains params", (done) => __awaiter(this, void 0, Promise, function* () {
+        server.when("GET", "/test").calls.reset();
+        http.request({
+            host: "127.0.0.1",
+            port: 4444,
+            path: "/test?x=1&b=2"
         }).end();
         yield server.waitForRequest();
         expect(server.when("GET", "/test").calls.count()).toBe(1);

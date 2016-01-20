@@ -14,7 +14,8 @@ export class Server {
                 this.nextCall = null
             }
             this.all(req.url, req.body, req.headers)
-            var mockRequest = this.when(req.method, req.url)
+            
+            var mockRequest = this.when(req.method, url.parse(req.url).pathname)
             var r = mockRequest(req.body, req.headers)
             res.send(r)
         })
