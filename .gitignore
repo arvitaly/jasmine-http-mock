@@ -1,0 +1,10 @@
+**/node_modules
+**/.vs
+*.csproj
+*.csproj.user
+*.sln
+**/obj
+src/typings/*
+!src/typings/tsd.d.ts
+src/web.config
+src/tsd.json
