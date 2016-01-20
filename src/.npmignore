@@ -1,8 +1,7 @@
-**/node_modules
 **/.vs
 *.csproj
 *.csproj.user
 *.sln
 **/obj
-src/typings
-src/web.config
+typings
+web.config
