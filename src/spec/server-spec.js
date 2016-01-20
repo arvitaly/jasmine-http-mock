@@ -41,4 +41,34 @@ describe("Server", () => {
         expect(server.when("GET", "/test").calls.count()).toBe(1);
         done();
     }));
+    it("when send and receive headers", (done) => __awaiter(this, void 0, Promise, function* () {
+        server.when("GET", "/test").calls.reset();
+        server.when("GET", "/test").and.callFake((req, res) => {
+            expect(req.headers["test"]).toBe("X");
+            res.setHeader("RTest", "X2");
+            res.sendStatus(200);
+        });
+        var res = yield asyncRequest({
+            host: "127.0.0.1",
+            port: 4444,
+            path: "/test",
+            headers: {
+                "Test": "X"
+            }
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.headers["rtest"]).toBe("X2");
+        done();
+    }));
 });
+function asyncRequest(options) {
+    return new Promise((resolve, reject) => {
+        var req = http.request(options, (res) => {
+            resolve(res);
+        });
+        req.on("error", (err) => {
+            reject(err);
+        });
+        req.end();
+    });
+}

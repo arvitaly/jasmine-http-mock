@@ -15,8 +15,11 @@ class Server {
             }
             this.all(req.url, req.body, req.headers);
             var mockRequest = this.when(req.method, url.parse(req.url).pathname);
-            var r = mockRequest(req.body, req.headers);
-            res.send(r);
+            var r = mockRequest(req, res);
+            if (r) {
+                res.setHeader("Access-Control-Allow-Origin", "*");
+                res.send(r);
+            }
         });
     }
     waitForRequest() {

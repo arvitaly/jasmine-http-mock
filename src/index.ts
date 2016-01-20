@@ -8,7 +8,7 @@ export class Server {
         app.listen(url.parse(address).port, function () {
             
         });
-        app.use((req, res, next) => {
+        app.use((req, res, next) => {            
             if (this.nextCall) {
                 this.nextCall()
                 this.nextCall = null
@@ -16,8 +16,11 @@ export class Server {
             this.all(req.url, req.body, req.headers)
             
             var mockRequest = this.when(req.method, url.parse(req.url).pathname)
-            var r = mockRequest(req.body, req.headers)
-            res.send(r)
+            var r = mockRequest(req, res)
+            if (r) {
+                res.setHeader("Access-Control-Allow-Origin", "*")
+                res.send(r)
+            }
         })
     }
     private requests: { [index: string]: jasmine.Spy } = {}
