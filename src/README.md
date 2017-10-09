@@ -15,8 +15,13 @@ Mock http-server for use in E2E jasmine tests
     //Get only port from address
     var server = createMockServer(address)
     
-    describe("test1", () => {    
-    //Async test
+    describe("test1", () => {
+        // Reset all requests to get a clean server
+        beforeEach(() =>{
+            server.clear()
+        })
+        
+        //Async test
         it("etest1", async (done) => {
             var answer = { c: "test" }
             server.when("GET", "/test").and.returnValue(answer)
@@ -34,7 +39,6 @@ Mock http-server for use in E2E jasmine tests
     })
     
 # Test
-    npm install jasmine -g
     cd ./src
     npm test
     

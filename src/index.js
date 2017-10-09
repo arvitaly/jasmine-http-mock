@@ -1,13 +1,13 @@
 "use strict";
-var express = require("express");
-var url = require('url');
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const url = require("url");
 class Server {
     constructor(address) {
         this.all = jasmine.createSpy("all");
         this.requests = {};
-        var app = express();
-        app.listen(url.parse(address).port, function () {
-        });
+        const app = express();
+        this.server = app.listen(url.parse(address).port);
         app.use((req, res, next) => {
             if (this.nextCall) {
                 this.nextCall();
@@ -32,6 +32,40 @@ class Server {
             this.requests[method + ":" + path] = jasmine.createSpy(method + ":" + path);
         }
         return this.requests[method + ":" + path];
+    }
+    /**
+     * Removes requests.
+     * An optional filter can be supplied to specify the paths to remove
+     * @param method method filter
+     * @param path path filter
+     */
+    clear(method, path) {
+        if (method || path) {
+            return this.removeFilteredRequests(method, path);
+        }
+        this.requests = {};
+    }
+    /**
+     * Filters the request based on method and/or path
+     * @param method method filter
+     * @param path path filter
+     */
+    removeFilteredRequests(method, path) {
+        const keys = Object.keys(this.requests);
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i].split(':', 2);
+            if ((method && key[0] !== method) ||
+                (path && key[1] !== path)) {
+                continue;
+            }
+            this.requests[keys[i]] = undefined;
+        }
+    }
+    /**
+     * Shuts down the server
+     */
+    close() {
+        this.server.close();
     }
 }
 exports.Server = Server;
